@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: customer
+server:
+  port: 8081
+resilience4j:
+  circuitbreaker:
+    instances:
+      producer:
+        base-config: default
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 2
+        minimumNumberOfCalls: 1
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.lang.RuntimeException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+
+
+logging:
+  level:
+    io.github.resilience4j: debug
